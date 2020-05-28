@@ -1,0 +1,7 @@
+{
+   "hostname": "DBHOSTNAME",
+   "port": 3306,
+   "database": "MYSQL_DATABASE",
+   "user": "MYSQL_USER",
+   "password": "MYSQL_USER_PASS"
+}
