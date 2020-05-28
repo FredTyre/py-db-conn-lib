@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import xml.etree.ElementTree as ET 
 import re
 import sshtunnel
+from enum import Enum
 
 ENDL = '\n'
 TAB = '\t'
@@ -14,6 +15,10 @@ dbCredentialsDirectory = 'settings\\'
 ignoreCaseReplaceSpanStart = re.compile('<span class="field-item">', re.IGNORECASE)
 ignoreCaseReplaceSpanEnd = re.compile("</span>", re.IGNORECASE)
 
+class sql_type(Enum):
+   EXECUTE = 0
+   FETCH = 1
+   
 def getDBConnectionInformation(databaseInfoAlias):
    dbConnectionInformation = []
    
@@ -53,6 +58,22 @@ def connectToMySQL(dbConnectionInformation):
     
    return conn
 
+def runSQL(cursor, sql2run, query_type=sql_type.EXECUTE):
+   result = cursor.execute(sql2run)
+   
+   if(query_type == sql_type.FETCH):
+      rows = cursor.fetchall()
+      
+      return rows
+
+   return None
+
 databaseInfoAlias = "database_alias_and_filename"
 saveDBConnectionInformation(databaseInfoAlias, dbConnectionInformation)
 dbConnectionInformation = getDBConnectionInformation(databaseInfoAlias)
+conn = connectToMySQL(dbConnectionInformation)
+cursor = conn.cursor()
+sql2run = "SELECT NOW()"
+rows = runSQL(cursor, sql2run, query_type=sql_type.FETCH)
+print(rows)
+cursor.close()
